@@ -43,6 +43,27 @@ func (c *ExampleController) CreateExample(ctx *gin.Context) {
 	ctx.JSON(http.StatusCreated, createdExample)
 }
 
+// GetExamples godoc
+// @Summary Get examples
+// @Description Get examples
+// @Tags examples
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} []repositories.Example
+// @Failure 400 {object} map[string]string
+// @Failure 404 {object} map[string]string
+// @Router /examples [get]
+func (c *ExampleController) GetExamples(ctx *gin.Context) {
+
+	example, err := c.service.GetExamples()
+	if err != nil {
+		ctx.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, example)
+}
+
 // GetExampleByID godoc
 // @Summary Get example by ID
 // @Description Get example by ID

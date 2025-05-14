@@ -50,7 +50,7 @@ func main() {
 		example := api.Group("/examples")
 		{
 			example.POST("", exampleController.CreateExample)
-			// example.GET("", exampleController.GetExamples)
+			example.GET("", exampleController.GetExamples)
 			example.GET("/:id", exampleController.GetExampleByID)
 			// example.PUT("/:id", exampleController.UpdateExample)
 			// example.DELETE("/:id", exampleController.DeleteExample)

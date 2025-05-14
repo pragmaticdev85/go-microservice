@@ -19,6 +19,34 @@ info:
   version: "1.0"
 paths:
   /examples:
+    get:
+      consumes:
+      - application/json
+      description: Get examples
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/repositories.Example'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get examples
+      tags:
+      - examples
     post:
       consumes:
       - application/json

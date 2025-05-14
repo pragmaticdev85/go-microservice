@@ -20,4 +20,8 @@ func (s *ExampleService) GetExampleByID(id string) (*repositories.Example, error
 	return s.repo.FindByID(id)
 }
 
+func (s *ExampleService) GetExamples() ([]repositories.Example, error) {
+	return s.repo.GetAllExamples()
+}
+
 // Add other service methods

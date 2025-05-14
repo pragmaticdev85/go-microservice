@@ -96,4 +96,93 @@ func (r *ExampleRepository) FindByID(id string) (*Example, error) {
 	return &example, nil
 }
 
+/*
+func (r *ExampleRepository) FindAll() (*[]Example, error) {
+	collection := r.client.Client.Database(r.dbName).Collection(r.collection)
+
+	var examples []Example
+	var cursor *mongo.Cursor
+	// cursor, err = collection.Find(context.Background(), {})
+	(context.Background()).Decode(&examples)
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			return nil, errors.New("example not found")
+		}
+		return nil, err
+	}
+
+	return &example, nil
+}*/
+
+// GetAllExamples retrieves all examples from the collection
+func (r *ExampleRepository) GetAllExamples() ([]Example, error) {
+	collection := r.client.Client.Database(r.dbName).Collection(r.collection)
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	// Find options (optional)
+	findOptions := options.Find()
+	// findOptions.SetLimit(100) // You can set limit if needed
+
+	// Execute query
+	cursor, err := collection.Find(ctx, bson.M{}, findOptions)
+	if err != nil {
+		return nil, err
+	}
+	defer cursor.Close(ctx)
+
+	// Decode results
+	var examples []Example
+	if err = cursor.All(ctx, &examples); err != nil {
+		return nil, err
+	}
+
+	return examples, nil
+}
+
+// GetExamplesWithFilter retrieves examples matching the given filter
+func (r *ExampleRepository) GetExamplesWithFilter(filter bson.M) ([]Example, error) {
+	collection := r.client.Client.Database(r.dbName).Collection(r.collection)
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	cursor, err := collection.Find(ctx, filter)
+	if err != nil {
+		return nil, err
+	}
+	defer cursor.Close(ctx)
+
+	var examples []Example
+	if err = cursor.All(ctx, &examples); err != nil {
+		return nil, err
+	}
+
+	return examples, nil
+}
+
+// GetPaginatedExamples retrieves paginated results
+func (r *ExampleRepository) GetPaginatedExamples(page, limit int64) ([]Example, error) {
+	collection := r.client.Client.Database(r.dbName).Collection(r.collection)
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	findOptions := options.Find()
+	findOptions.SetSkip((page - 1) * limit)
+	findOptions.SetLimit(limit)
+	findOptions.SetSort(bson.D{{Key: "created_at", Value: -1}}) // Sort by created_at descending
+
+	cursor, err := collection.Find(ctx, bson.M{}, findOptions)
+	if err != nil {
+		return nil, err
+	}
+	defer cursor.Close(ctx)
+
+	var examples []Example
+	if err = cursor.All(ctx, &examples); err != nil {
+		return nil, err
+	}
+
+	return examples, nil
+}
+
 // Add other repository methods (FindAll, Update, Delete, etc.)
