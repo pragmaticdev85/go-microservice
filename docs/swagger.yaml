@@ -1,0 +1,88 @@
+basePath: /api/v1
+definitions:
+  repositories.Example:
+    properties:
+      createdAt:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      updatedAt:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: This is a sample microservice with Go, Gin, MongoDB
+  title: Go Microservice API
+  version: "1.0"
+paths:
+  /examples:
+    post:
+      consumes:
+      - application/json
+      description: Create a new example with the input payload
+      parameters:
+      - description: Create example
+        in: body
+        name: example
+        required: true
+        schema:
+          $ref: '#/definitions/repositories.Example'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/repositories.Example'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Create a new example
+      tags:
+      - examples
+  /examples/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get example by ID
+      parameters:
+      - description: Example ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/repositories.Example'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get example by ID
+      tags:
+      - examples
+swagger: "2.0"
